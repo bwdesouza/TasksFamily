@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Controller.CadastroAtividadesActivity"
+    android:layout_margin="15dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Nova Atividade"
+        android:gravity="center"
+        android:textSize="20dp"
+        android:textStyle="bold"/>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <EditText
+                android:id="@+id/edtAtvTitulo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Título"
+                android:inputType="text"/>
+
+            <Switch
+                android:id="@+id/swAtvTodoDia"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Todo dia"/>
+
+            <EditText
+                android:id="@+id/dtAtvInicio"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="15dp"
+                android:layout_marginTop="15dp"
+                android:hint="Começa"
+                android:inputType="date"
+                android:paddingTop="8dp"
+                android:textColor="@color/colorAccent" />
+            <!--android:background="@drawable/"-->
+            <!--android:drawableRight="@drawable/icone_cor_diferente"-->
+
+            <EditText
+                android:id="@+id/dtAtvFim"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="15dp"
+                android:layout_marginTop="15dp"
+                android:hint="Termina"
+                android:inputType="date"
+                android:paddingTop="8dp"
+                android:textColor="@color/colorAccent" />
+
+            <EditText
+                android:id="@+id/edtAtvRepetir"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Repetir"
+                android:inputType="text"/>
+
+            <EditText
+                android:id="@+id/edtAtvDescricao"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Anotações"
+                android:inputType="text"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:layout_height="wrap_content"
+                android:layout_margin="15dp">
+
+                <Button
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/btnCadCancelar"
+                    android:text="Cancelar"
+                    android:layout_marginRight="15dp"
+                    android:onClick="OnClickBtnAtvCancelar"/>
+
+                <Button
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/btnCadSalvar"
+                    android:text="Salvar"
+                    android:onClick="OnClickBtnAtvSalvar"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>
