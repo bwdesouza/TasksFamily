@@ -35,7 +35,10 @@
                 android:id="@+id/swAtvTodoDia"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Todo dia"/>
+                android:text="Todo dia"
+                android:textSize="17dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="2dp"/>
 
             <EditText
                 android:id="@+id/dtAtvInicio"
@@ -45,7 +48,7 @@
                 android:layout_marginTop="15dp"
                 android:hint="Começa"
                 android:inputType="date"
-                android:paddingTop="8dp"
+                android:paddingTop="1dp"
                 android:textColor="@color/colorAccent" />
             <!--android:background="@drawable/"-->
             <!--android:drawableRight="@drawable/icone_cor_diferente"-->
@@ -58,7 +61,7 @@
                 android:layout_marginTop="15dp"
                 android:hint="Termina"
                 android:inputType="date"
-                android:paddingTop="8dp"
+                android:paddingTop="1dp"
                 android:textColor="@color/colorAccent" />
 
             <EditText
@@ -71,9 +74,11 @@
             <EditText
                 android:id="@+id/edtAtvDescricao"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="150dp"
                 android:hint="Anotações"
-                android:inputType="text"/>
+                android:gravity="center"
+                android:inputType="textMultiLine"
+                android:maxLength="145"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
