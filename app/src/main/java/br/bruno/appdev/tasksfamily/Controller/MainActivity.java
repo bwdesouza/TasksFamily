@@ -101,8 +101,9 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_nova_tarefa) {
             Intent intent = new Intent(MainActivity.this, CadastroAtividadesActivity.class);
             startActivity(intent);
-        } else if (id == R.id.nav_slideshow) {
-
+        } else if (id == R.id.nav_minhas_tarefas) {
+            Intent intent = new Intent(MainActivity.this, MinhasAtividadesActivity.class);
+            startActivity(intent);
         } else if (id == R.id.nav_manage) {
 
         } else if (id == R.id.nav_share) {

@@ -10,4 +10,12 @@
     <string name="facebook_app_id">2202675019946194</string>
     <string name="fb_login_protocol_scheme">fb2202675019946194</string>
 
+    <string-array name="atv_repetir_spinner">
+        <item>Nunca</item>
+        <item>Todos os Dias</item>
+        <item>A Cada Semana</item>
+        <item>A Cada 15 Dias</item>
+        <item>A Cada Mês</item>
+        <item>A Cada Ano</item>
+    </string-array>
 </resources>
