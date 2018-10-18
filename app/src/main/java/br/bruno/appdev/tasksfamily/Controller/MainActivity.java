@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity
         firebase = ConfiguracaoFireBase.getFirebaseAutenticacao();
         verifyUserLogged();
 
-        TarefaDataStore.sharedInstance().getAll();
+        TarefaDataStore.sharedInstance().carregaTarefas();
 
 //        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
 //        fab.setOnClickListener(new View.OnClickListener() {

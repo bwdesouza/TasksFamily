@@ -45,21 +45,32 @@ public class TarefaDataStore {
     }
 
     public List<Tarefas> getAll() {
+        return tarefas;
+    }
+
+    public void atualizarCampo(Tarefas tarefa){
+
+    }
+
+    public void carregaTarefas(){
+        tarefas = new ArrayList<>();
 
         autenticacao = ConfiguracaoFireBase.getFirebaseAutenticacao();
         usuarioFirebase = autenticacao.getCurrentUser();
         DatabaseReference raiz = FirebaseDatabase.getInstance().getReference();
 
-        Query tarefasUsuario = raiz.child("Tasks")
+        String email = usuarioFirebase.getEmail().toString();
+
+        Query tarefasUsuario = raiz.child("Tasks").child(email.split("@")[0])
                 .orderByChild("emailCriador")
-                .equalTo(usuarioFirebase.getEmail().toString());
+                .equalTo(email);
 
         tarefasUsuario.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
-                    Tarefas tare = postSnapshot.getValue(Tarefas.class);
-                    tarefas.add(tare);
+                    Tarefas taref = postSnapshot.getValue(Tarefas.class);
+                    tarefas.add(taref);
                 }
             }
 
@@ -68,8 +79,6 @@ public class TarefaDataStore {
 
             }
         });
-
-        return tarefas;
     }
 
 }

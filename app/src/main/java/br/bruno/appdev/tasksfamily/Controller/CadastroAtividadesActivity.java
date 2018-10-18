@@ -37,6 +37,7 @@ import java.util.TimeZone;
 
 import br.bruno.appdev.tasksfamily.Entities.Tarefas;
 import br.bruno.appdev.tasksfamily.Model.ConfiguracaoFireBase;
+import br.bruno.appdev.tasksfamily.Model.TarefaDataStore;
 import br.bruno.appdev.tasksfamily.R;
 
 public class CadastroAtividadesActivity extends AppCompatActivity {
@@ -460,6 +461,7 @@ public class CadastroAtividadesActivity extends AppCompatActivity {
 
             Toast.makeText(CadastroAtividadesActivity.this,"Tarefa cadastrada com sucesso!", Toast.LENGTH_LONG).show();
 
+            TarefaDataStore.sharedInstance().carregaTarefas();
             finish();
         }
     }
