@@ -23,35 +23,16 @@ import java.util.List;
 
 import br.bruno.appdev.tasksfamily.Entities.Tarefas;
 import br.bruno.appdev.tasksfamily.Model.ConfiguracaoFireBase;
+import br.bruno.appdev.tasksfamily.Model.TarefaDataStore;
 import br.bruno.appdev.tasksfamily.R;
 
 public class AtividadesAdapter extends RecyclerView.Adapter<AtividadesAdapter.AtividadeHolder> {
 
-    private List<Tarefas> tarefas = new ArrayList<>();
-    private FirebaseAuth autenticacao;
-    FirebaseUser usuarioFirebase;
+    private List<Tarefas> tarefas = TarefaDataStore.sharedInstance().getAll();
 
     @NonNull
     @Override
     public AtividadeHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-
-        autenticacao = ConfiguracaoFireBase.getFirebaseAutenticacao();
-        usuarioFirebase = autenticacao.getCurrentUser();
-        DatabaseReference raiz = FirebaseDatabase.getInstance().getReference();
-        Query tarefasUser = raiz.child("Tasks").equalTo(usuarioFirebase.getEmail().toString());
-
-        tarefasUser.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Tarefas tare = dataSnapshot.getValue(Tarefas.class);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-
         View view = LayoutInflater.from(viewGroup.getContext())
                 .inflate(R.layout.recycleview_atividades, viewGroup, false);
 
@@ -60,7 +41,10 @@ public class AtividadesAdapter extends RecyclerView.Adapter<AtividadesAdapter.At
 
     @Override
     public void onBindViewHolder(@NonNull AtividadeHolder holder, int position) {
+        Tarefas task = tarefas.get(position);
 
+        holder.txtLstAtvTitulo.setText(task.getTitulo());
+        holder.edtLstAtvDescricao.setText(task.getDescricao());
     }
 
     @Override
@@ -70,16 +54,16 @@ public class AtividadesAdapter extends RecyclerView.Adapter<AtividadesAdapter.At
 
     public class AtividadeHolder extends RecyclerView.ViewHolder {
 
-        ImageView imgUserTarefa;
+//        ImageView imgUserTarefa;
         TextView txtLstAtvTitulo;
         EditText edtLstAtvDescricao;
 
         public AtividadeHolder(@NonNull View itemView) {
             super(itemView);
 
-            imgUserTarefa = itemView.findViewById(R.id.imgUserTarefa);
+//            imgUserTarefa = itemView.findViewById(R.id.imgUserTarefa);
             txtLstAtvTitulo = itemView.findViewById(R.id.txtLstAtvTitulo);
-            edtLstAtvDescricao = itemView.findViewById(R.id.edtAtvDescricao);
+            edtLstAtvDescricao = itemView.findViewById(R.id.edtLstAtvDescricao);
         }
     }
 }

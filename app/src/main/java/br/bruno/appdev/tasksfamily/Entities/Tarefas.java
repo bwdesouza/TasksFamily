@@ -11,16 +11,46 @@ public class Tarefas {
     private long eventID;
     private String Titulo;
     private String Descricao;
-    private List<String> EmailsDestinatarios;
+    private String EmailsDestinatarios;
     private String EmailCriador;
     private boolean TarefaAceita;
+    private String GrauParentesco;
 
-    public Tarefas() {
+    public Tarefas(){
+
+    }
+
+    public Tarefas(long eventID, String titulo, String descricao, String emailsDestinatarios, String emailCriador, boolean tarefaAceita, String grauParentesco) {
+        this.eventID = eventID;
+        Titulo = titulo;
+        Descricao = descricao;
+        EmailsDestinatarios = emailsDestinatarios;
+        EmailCriador = emailCriador;
+        TarefaAceita = tarefaAceita;
+        GrauParentesco = grauParentesco;
     }
 
     public void SalvarTask(){
         DatabaseReference referencia = ConfiguracaoFireBase.getFirebase();
-        referencia.child("Tasks").child(String.valueOf(getEventID())).setValue(this);
+        String email = getEmailCriador().split("@")[0];
+        referencia.child("Tasks").child(email).child(String.valueOf(getEventID())).setValue(this);
+    }
+
+
+    public String getEmailsDestinatarios() {
+        return EmailsDestinatarios;
+    }
+
+    public void setEmailsDestinatarios(String emailsDestinatarios) {
+        EmailsDestinatarios = emailsDestinatarios;
+    }
+
+    public String getGrauParentesco() {
+        return GrauParentesco;
+    }
+
+    public void setGrauParentesco(String grauParentesco) {
+        GrauParentesco = grauParentesco;
     }
 
     public long getEventID() {
@@ -45,14 +75,6 @@ public class Tarefas {
 
     public void setDescricao(String descricao) {
         Descricao = descricao;
-    }
-
-    public List<String> getEmailsDestinatarios() {
-        return EmailsDestinatarios;
-    }
-
-    public void setEmailsDestinatarios(List<String> emailsDestinatarios) {
-        EmailsDestinatarios = emailsDestinatarios;
     }
 
     public String getEmailCriador() {

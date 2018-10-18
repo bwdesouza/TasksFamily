@@ -22,13 +22,16 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 
@@ -76,16 +79,13 @@ public class CadastroAtividadesActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cadastro_atividades);
 
-        autenticacao = ConfiguracaoFireBase.getFirebaseAutenticacao();
-        usuarioFirebase = autenticacao.getCurrentUser();
-
         // No explanation needed, we can request the permission.
         ActivityCompat.requestPermissions(CadastroAtividadesActivity.this,
                 new String[]{Manifest.permission.READ_CALENDAR}, 1);
 
         // No explanation needed, we can request the permission.
         ActivityCompat.requestPermissions(CadastroAtividadesActivity.this,
-                new String[]{Manifest.permission.WRITE_CALENDAR}, 1);
+                new String[]{Manifest.permission.WRITE_CALENDAR}, 2);
 
         Spinner spinner = findViewById(R.id.atv_repetir_spinner);
         // Create an ArrayAdapter using the string array and a default spinner layout
@@ -371,16 +371,20 @@ public class CadastroAtividadesActivity extends AppCompatActivity {
         if (ContextCompat.checkSelfPermission(CadastroAtividadesActivity.this,
                 Manifest.permission.WRITE_CALENDAR)
                 != PackageManager.PERMISSION_GRANTED) {
-
+            // No explanation needed, we can request the permission.
+            ActivityCompat.requestPermissions(CadastroAtividadesActivity.this,
+                    new String[]{Manifest.permission.WRITE_CALENDAR}, 2);
         } else {
+
+            autenticacao = ConfiguracaoFireBase.getFirebaseAutenticacao();
+            usuarioFirebase = autenticacao.getCurrentUser();
 
             String account_name = "", account_type = "", owner_account = "";
 
-        if(usuarioFirebase.getEmail().contains("google")){
-            account_name = usuarioFirebase.getEmail().toString();
+            String email = usuarioFirebase.getEmail().toString();
+            account_name = email;
             account_type = "com.google";
-            owner_account = usuarioFirebase.getEmail().toString();
-        }
+            owner_account = email;
 
         Cursor cur = null;
         ContentResolver cr = getContentResolver();
@@ -442,22 +446,21 @@ public class CadastroAtividadesActivity extends AppCompatActivity {
             values.put(CalendarContract.Events.DTEND, endMillis);
             values.put(CalendarContract.Events.TITLE, edtAtvTitulo.getText().toString());
             values.put(CalendarContract.Events.DESCRIPTION, edtAtvDescricao.getText().toString());
-            values.put(CalendarContract.Events.CALENDAR_ID, calID);
+            values.put(CalendarContract.Events.CALENDAR_ID, 3);
             values.put(CalendarContract.Events.EVENT_TIMEZONE, "UTC/GMT -3:00");
             uri = cr.insert(CalendarContract.Events.CONTENT_URI, values);
 
             String eventID = uri.getLastPathSegment();
             IDCal = Long.parseLong(eventID);
 
-            Tarefas tarefa = new Tarefas();
-
-            tarefa.setTitulo(edtAtvTitulo.getText().toString());
-            tarefa.setDescricao(edtAtvDescricao.getText().toString());
-            tarefa.setEmailCriador(usuarioFirebase.getEmail());
-            tarefa.setEventID(IDCal);
-            tarefa.setTarefaAceita(false);
+            Tarefas tarefa = new Tarefas(IDCal, edtAtvTitulo.getText().toString(), edtAtvDescricao.getText().toString(),"",
+                    email,false, "");
 
             tarefa.SalvarTask();
+
+            Toast.makeText(CadastroAtividadesActivity.this,"Tarefa cadastrada com sucesso!", Toast.LENGTH_LONG).show();
+
+            finish();
         }
     }
 }

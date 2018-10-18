@@ -1,5 +1,9 @@
 package br.bruno.appdev.tasksfamily.Controller;
 
+import android.content.ContentUris;
+import android.content.Intent;
+import android.net.Uri;
+import android.provider.CalendarContract;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -8,6 +12,8 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 
+import br.bruno.appdev.tasksfamily.Entities.Tarefas;
+import br.bruno.appdev.tasksfamily.Model.TarefaDataStore;
 import br.bruno.appdev.tasksfamily.R;
 import br.bruno.appdev.tasksfamily.View.AtividadesAdapter;
 
@@ -50,13 +56,55 @@ public class MinhasAtividadesActivity extends AppCompatActivity {
 
             }
         });
+
+        gestureDetector = new GestureDetector(new GestureDetector.SimpleOnGestureListener() {
+
+            @Override
+            public void onLongPress(MotionEvent e) {
+
+//                View view = recyclerView.findChildViewUnder(e.getX(), e.getY());
+//                int position = recyclerView.getChildAdapterPosition(view);
+//                TarefaDataStore.sharedInstance().removeCity(position);
+//                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public boolean onSingleTapConfirmed(MotionEvent e) {
+
+                View view = recyclerView.findChildViewUnder(e.getX(), e.getY());
+                int position = recyclerView.getChildAdapterPosition(view);
+
+                Tarefas tarefa = TarefaDataStore.sharedInstance().getTarefa(position);
+                long eventID = tarefa.getEventID();
+
+                Uri uri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, eventID);
+                Intent intent = new Intent(Intent.ACTION_VIEW)
+                        .setData(uri);
+                startActivity(intent);
+
+                return true;
+            }
+
+            @Override
+            public boolean onDoubleTap(MotionEvent e) {
+
+//                View view = recyclerView.findChildViewUnder(e.getX(), e.getY());
+//                int position = recyclerView.getChildAdapterPosition(view);
+//
+//                Intent intent = new Intent(MainActivity.this, AddEditCity.class);
+//                intent.putExtra("position", position);
+//                startActivity(intent);
+
+                return true;
+            }
+        });
     }
 
     public void OnClickBtnTarefaFeita(View view){
-
+        String b = "";
     }
 
     public void OnClickBtnRejeitarTarefa(View view){
-
+        String b = "";
     }
 }

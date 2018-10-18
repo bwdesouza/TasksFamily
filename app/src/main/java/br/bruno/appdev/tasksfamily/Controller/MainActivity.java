@@ -17,6 +17,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import br.bruno.appdev.tasksfamily.Model.ConfiguracaoFireBase;
+import br.bruno.appdev.tasksfamily.Model.TarefaDataStore;
 import br.bruno.appdev.tasksfamily.R;
 
 public class MainActivity extends AppCompatActivity
@@ -33,6 +34,8 @@ public class MainActivity extends AppCompatActivity
 
         firebase = ConfiguracaoFireBase.getFirebaseAutenticacao();
         verifyUserLogged();
+
+        TarefaDataStore.sharedInstance().getAll();
 
 //        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
 //        fab.setOnClickListener(new View.OnClickListener() {
