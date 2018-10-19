@@ -16,6 +16,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -36,8 +37,10 @@ import java.util.Locale;
 import java.util.TimeZone;
 
 import br.bruno.appdev.tasksfamily.Entities.Tarefas;
+import br.bruno.appdev.tasksfamily.Entities.Usuarios;
 import br.bruno.appdev.tasksfamily.Model.ConfiguracaoFireBase;
 import br.bruno.appdev.tasksfamily.Model.TarefaDataStore;
+import br.bruno.appdev.tasksfamily.Model.UsuarioDataStore;
 import br.bruno.appdev.tasksfamily.R;
 
 public class CadastroAtividadesActivity extends AppCompatActivity {
@@ -53,6 +56,8 @@ public class CadastroAtividadesActivity extends AppCompatActivity {
     private EditText dtAtvFim;
     private EditText dtAtvHoraFim;
     private EditText edtAtvDescricao;
+    private Spinner emails_parentescos_spinner;
+    private String emailDestinatario;
     private int btnClicado = 0;
     private int selectedHour, selectedMinute;
     private long IDCal;
@@ -97,6 +102,35 @@ public class CadastroAtividadesActivity extends AppCompatActivity {
         // Apply the adapter to the spinner
         spinner.setAdapter(adapter);
 
+        autenticacao = ConfiguracaoFireBase.getFirebaseAutenticacao();
+        usuarioFirebase = autenticacao.getCurrentUser();
+
+        String emailUsuario = usuarioFirebase.getEmail();
+
+        Usuarios usuarioLogado = UsuarioDataStore.sharedInstance().getUsuarios(emailUsuario);
+
+        String[] items = retornarQuemEstaCadastrado(usuarioLogado);
+
+        emails_parentescos_spinner = findViewById(R.id.emails_parentescos_spinner);
+
+        ArrayAdapter<String> adapterSpinner = new ArrayAdapter<String>(this,
+                android.R.layout.simple_spinner_dropdown_item, items);
+
+        emails_parentescos_spinner.setAdapter(adapterSpinner);
+
+        emails_parentescos_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view,
+                                       int position, long id) {
+                emailDestinatario = (String) parent.getItemAtPosition(position);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // TODO Auto-generated method stub
+            }
+        });
+
         dtAtvInicio = findViewById(R.id.dtAtvInicio);
         dtAtvFim = findViewById(R.id.dtAtvFim);
         dtAtvHoraIni = findViewById(R.id.dtAtvHoraIni);
@@ -104,6 +138,8 @@ public class CadastroAtividadesActivity extends AppCompatActivity {
         edtAtvTitulo = findViewById(R.id.edtAtvTitulo);
         swAtvTodoDia = findViewById(R.id.swAtvTodoDia);
         edtAtvDescricao = findViewById(R.id.edtAtvDescricao);
+
+        IDCal = 0;
 
         dtAtvInicio.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -188,6 +224,51 @@ public class CadastroAtividadesActivity extends AppCompatActivity {
         } else {
             dtAtvFim.setText(sdf.format(myCalendar.getTime()));
         }
+    }
+
+    public String[] retornarQuemEstaCadastrado(Usuarios usuario){
+        List<String> retorno = new ArrayList<>();
+        if(usuario.getIdFilha() != null){
+            if(!usuario.getIdFilha().toString().equals("")){
+                String email = UsuarioDataStore.sharedInstance().getEmailUsuario(usuario.getIdFilha());
+                if(email != null) {
+                    retorno.add(email);
+                }
+            }
+        }
+        if(usuario.getIdFilho() != null){
+            if (!usuario.getIdFilho().toString().equals("")) {
+                String email = UsuarioDataStore.sharedInstance().getEmailUsuario(usuario.getIdFilho());
+                if (email != null) {
+                    retorno.add(email);
+                }
+            }
+        }
+        if(usuario.getIdPai() != null){
+            if (!usuario.getIdPai().toString().equals("")) {
+                String email = UsuarioDataStore.sharedInstance().getEmailUsuario(usuario.getIdPai());
+                if (email != null) {
+                    retorno.add(email);
+                }
+            }
+        }
+        if(usuario.getIdMae() != null){
+            if(!usuario.getIdMae().toString().equals("")){
+                String email = UsuarioDataStore.sharedInstance().getEmailUsuario(usuario.getIdMae());
+                if(email != null) {
+                    retorno.add(email);
+                }
+            }
+        }
+
+        String[] retornoEmails = new String[retorno.size() + 1];
+        retornoEmails[0] = usuario.getEmail();
+        for(int i = 0; i < retorno.size(); i++){
+            int j = i;
+            retornoEmails[j+1] = retorno.get(i);
+        }
+
+        return retornoEmails;
     }
 
     public void OnClickBtnAtvCancelar(View view){
@@ -307,21 +388,25 @@ public class CadastroAtividadesActivity extends AppCompatActivity {
             endMillis = endTime.getTimeInMillis();
 
             // Insert Event
-            cr = getContentResolver();
-            ContentValues values = new ContentValues();
-            values.put(CalendarContract.Events.DTSTART, startMillis);
-            values.put(CalendarContract.Events.DTEND, endMillis);
-            values.put(CalendarContract.Events.TITLE, edtAtvTitulo.getText().toString());
-            values.put(CalendarContract.Events.DESCRIPTION, edtAtvDescricao.getText().toString());
-            values.put(CalendarContract.Events.CALENDAR_ID, 3);
-            values.put(CalendarContract.Events.EVENT_TIMEZONE, "UTC/GMT -3:00");
-            uri = cr.insert(CalendarContract.Events.CONTENT_URI, values);
+            try {
+                cr = getContentResolver();
+                ContentValues values = new ContentValues();
+                values.put(CalendarContract.Events.DTSTART, startMillis);
+                values.put(CalendarContract.Events.DTEND, endMillis);
+                values.put(CalendarContract.Events.TITLE, edtAtvTitulo.getText().toString());
+                values.put(CalendarContract.Events.DESCRIPTION, edtAtvDescricao.getText().toString());
+                values.put(CalendarContract.Events.CALENDAR_ID, 3);
+                values.put(CalendarContract.Events.EVENT_TIMEZONE, "UTC/GMT -3:00");
+                uri = cr.insert(CalendarContract.Events.CONTENT_URI, values);
 
-            String eventID = uri.getLastPathSegment();
-            IDCal = Long.parseLong(eventID);
+                String eventID = uri.getLastPathSegment();
+                IDCal = Long.parseLong(eventID);
+            }catch (Exception e){
 
-            Tarefas tarefa = new Tarefas(IDCal, edtAtvTitulo.getText().toString(), edtAtvDescricao.getText().toString(),"",
-                    email, false, "", false, false);
+            }
+
+            Tarefas tarefa = new Tarefas(IDCal, edtAtvTitulo.getText().toString(), edtAtvDescricao.getText().toString(),emailDestinatario,
+                    email, false, UsuarioDataStore.sharedInstance().getUsuarios(emailDestinatario).getGrauParentesco(), false, false);
 
             tarefa.SalvarTask();
 

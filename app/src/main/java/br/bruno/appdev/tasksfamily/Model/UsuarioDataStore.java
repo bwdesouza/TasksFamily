@@ -60,6 +60,17 @@ public class UsuarioDataStore {
         return us;
     }
 
+
+    public String getEmailUsuario(String idUsuario) {
+        String email = null;
+        for (Usuarios usua : usuarios) {
+            if(usua.getId().toString().equals(idUsuario)){
+                return usua.getEmail();
+            }
+        }
+        return email;
+    }
+
     public List<Usuarios> getAll() {
         return usuarios;
     }
@@ -70,9 +81,6 @@ public class UsuarioDataStore {
         autenticacao = ConfiguracaoFireBase.getFirebaseAutenticacao();
         usuarioFirebase = autenticacao.getCurrentUser();
         DatabaseReference raiz = FirebaseDatabase.getInstance().getReference();
-
-        String email = usuarioFirebase.getEmail().toString();
-        String uid = usuarioFirebase.getUid();
 
         Query tarefasUsuario = raiz.child("Users");
 
