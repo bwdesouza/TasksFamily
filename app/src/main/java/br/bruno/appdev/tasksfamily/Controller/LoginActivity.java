@@ -167,6 +167,7 @@ public class LoginActivity extends AppCompatActivity {
 
     public void abrirCadastroUsuario(){
         Intent intent = new Intent(LoginActivity.this, CadastroUsuarioActivity.class);
+        intent.putExtra("tela", "login");
         startActivity(intent);
     }
 }

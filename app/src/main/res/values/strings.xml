@@ -21,12 +21,8 @@
 
     <string-array name="cad_parentesco_spinner">
         <item>Pai</item>
-        <item>Mãe</item>
+        <item>Mae</item>
         <item>Filho</item>
         <item>Filha</item>
-        <item>Avô</item>
-        <item>Avó</item>
-        <item>Neto</item>
-        <item>Neta</item>
     </string-array>
 </resources>

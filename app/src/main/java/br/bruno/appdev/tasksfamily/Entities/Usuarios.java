@@ -18,9 +18,11 @@ public class Usuarios {
     private String senha;
     private String sexo;
     private String aniversario;
-    private Usuarios pai;
-    private Usuarios mae;
-    private List<Usuarios> filhos;
+    private String idPai;
+    private String idMae;
+    private String idFilho;
+    private String idFilha;
+    private String grauParentesco;
 
     public Usuarios() {
     }
@@ -102,27 +104,43 @@ public class Usuarios {
         this.aniversario = aniversario;
     }
 
-    public Usuarios getPai() {
-        return pai;
+    public String getIdPai() {
+        return idPai;
     }
 
-    public void setPai(Usuarios pai) {
-        this.pai = pai;
+    public void setIdPai(String idPai) {
+        this.idPai = idPai;
     }
 
-    public Usuarios getMae() {
-        return mae;
+    public String getIdMae() {
+        return idMae;
     }
 
-    public void setMae(Usuarios mae) {
-        this.mae = mae;
+    public void setIdMae(String idMae) {
+        this.idMae = idMae;
     }
 
-    public List<Usuarios> getFilhos() {
-        return filhos;
+    public String getIdFilho() {
+        return idFilho;
     }
 
-    public void setFilhos(List<Usuarios> filhos) {
-        this.filhos = filhos;
+    public void setIdFilho(String idFilho) {
+        this.idFilho = idFilho;
+    }
+
+    public String getIdFilha() {
+        return idFilha;
+    }
+
+    public void setIdFilha(String idFilha) {
+        this.idFilha = idFilha;
+    }
+
+    public String getGrauParentesco() {
+        return grauParentesco;
+    }
+
+    public void setGrauParentesco(String grauParentesco) {
+        this.grauParentesco = grauParentesco;
     }
 }

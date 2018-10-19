@@ -15,12 +15,17 @@ public class Tarefas {
     private String EmailCriador;
     private boolean TarefaAceita;
     private String GrauParentesco;
+    private boolean TarefaFeita;
+    private boolean TarefaConcluida;
 
     public Tarefas(){
 
     }
 
-    public Tarefas(long eventID, String titulo, String descricao, String emailsDestinatarios, String emailCriador, boolean tarefaAceita, String grauParentesco) {
+    public Tarefas(long eventID, String titulo, String descricao, String emailsDestinatarios,
+                   String emailCriador, boolean tarefaAceita, String grauParentesco,
+                   boolean tarefaFeita, boolean tarefaConcluida) {
+
         this.eventID = eventID;
         Titulo = titulo;
         Descricao = descricao;
@@ -28,6 +33,7 @@ public class Tarefas {
         EmailCriador = emailCriador;
         TarefaAceita = tarefaAceita;
         GrauParentesco = grauParentesco;
+        TarefaFeita = tarefaFeita;
     }
 
     public void SalvarTask(){
@@ -91,5 +97,21 @@ public class Tarefas {
 
     public void setTarefaAceita(boolean tarefaAceita) {
         TarefaAceita = tarefaAceita;
+    }
+
+    public boolean isTarefaFeita() {
+        return TarefaFeita;
+    }
+
+    public void setTarefaFeita(boolean tarefaFeita) {
+        TarefaFeita = tarefaFeita;
+    }
+
+    public boolean isTarefaConcluida() {
+        return TarefaConcluida;
+    }
+
+    public void setTarefaConcluida(boolean tarefaConcluida) {
+        TarefaConcluida = tarefaConcluida;
     }
 }

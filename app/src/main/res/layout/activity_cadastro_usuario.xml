@@ -31,9 +31,10 @@
                 android:orientation="horizontal">
 
                 <TextView
+                    android:id="@+id/txtCadVoceE"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Grau Parentesco" />
+                    android:text="Você é ?" />
 
                 <Spinner
                     android:id="@+id/cad_parentesco_spinner"

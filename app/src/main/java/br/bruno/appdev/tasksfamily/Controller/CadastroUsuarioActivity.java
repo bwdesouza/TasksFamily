@@ -9,6 +9,7 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -20,10 +21,13 @@ import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.google.firebase.auth.FirebaseUser;
 
+import java.util.List;
+
 import br.bruno.appdev.tasksfamily.Entities.Usuarios;
 import br.bruno.appdev.tasksfamily.Helper.Base64Custom;
 import br.bruno.appdev.tasksfamily.Helper.Preferencias;
 import br.bruno.appdev.tasksfamily.Model.ConfiguracaoFireBase;
+import br.bruno.appdev.tasksfamily.Model.UsuarioDataStore;
 import br.bruno.appdev.tasksfamily.R;
 
 public class CadastroUsuarioActivity extends AppCompatActivity {
@@ -37,9 +41,13 @@ public class CadastroUsuarioActivity extends AppCompatActivity {
     private RadioButton rbMasculino;
     private RadioButton rbFeminino;
     private Usuarios usuario;
-    private Spinner spinner;
+    private Spinner parentesco;
+    private String qualTelaChamaou;
+    private TextView txtCadVoceE;
+
 
     private FirebaseAuth autenticacao;
+    FirebaseUser usuarioFirebase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,17 +62,21 @@ public class CadastroUsuarioActivity extends AppCompatActivity {
         edtCadConfSenha = findViewById(R.id.edtCadConfSenha);
         rbMasculino = findViewById(R.id.rbCadMasculino);
         rbFeminino = findViewById(R.id.rbCadFeminino);
+        parentesco = findViewById(R.id.cad_parentesco_spinner);
+        qualTelaChamaou = getIntent().getDataString();
+        txtCadVoceE = findViewById(R.id.txtCadVoceE);
 
+        if(qualTelaChamaou != "login") {
+            txtCadVoceE.setText("Ele é seu.. ?");
+        }
 
-
-        spinner = findViewById(R.id.cad_parentesco_spinner);
         // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.cad_parentesco_spinner, android.R.layout.simple_spinner_item);
         // Specify the layout to use when the list of choices appears
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         // Apply the adapter to the spinner
-        spinner.setAdapter(adapter);
+        parentesco.setAdapter(adapter);
     }
 
 
@@ -74,18 +86,46 @@ public class CadastroUsuarioActivity extends AppCompatActivity {
 
     public void OnClickBtnCadSalvar(View view){
         if(edtCadSenha.getText().toString().equals(edtCadConfSenha.getText().toString())){
+            autenticacao = ConfiguracaoFireBase.getFirebaseAutenticacao();
+            usuarioFirebase = autenticacao.getCurrentUser();
+
+            String email = usuarioFirebase.getEmail().toString();
+            Usuarios us = UsuarioDataStore.sharedInstance().getUsuarios(email);
+            String grauParentesco = parentesco.getSelectedItem().toString();
+
+            if(us != null){
+                if(grauParentesco.equals(us.getGrauParentesco())){
+                    Toast.makeText(this,"Você não pode ser " + parentesco.getSelectedItem().toString() + " pois o seu " + us.getNome() + " já é!", Toast.LENGTH_LONG).show();
+                    return;
+                }
+            }
+
             usuario = new Usuarios();
             usuario.setNome(edtCadNome.getText().toString());
             usuario.setSobrenome(edtCadSobrenome.getText().toString());
             usuario.setAniversario(edtCadAniversario.getText().toString());
             usuario.setEmail(edtCadEmail.getText().toString());
             usuario.setSenha(edtCadSenha.getText().toString());
-            String grauParentesco = spinner.getSelectedItem().toString();
+            usuario.setGrauParentesco(parentesco.getSelectedItem().toString());
 
             if(rbFeminino.isChecked()){
                 usuario.setSexo("Feminino");
             }else{
                 usuario.setSexo("Masculino");
+            }
+
+            if(qualTelaChamaou != "login"){
+                if(grauParentesco.equals("Filho")){
+                    us.setIdFilho(usuario.getId());
+                }else if(grauParentesco.equals("Filha")){
+                    us.setIdFilha(usuario.getId());
+                }else if(grauParentesco.equals("Mae")){
+                    us.setIdMae(usuario.getId());
+                }else if(grauParentesco.equals("Pai")){
+                    us.setIdPai(usuario.getId());
+                }
+
+                UsuarioDataStore.sharedInstance().atualizarUsuario(us);
             }
 
             CadastrarUsuario();

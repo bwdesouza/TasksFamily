@@ -1,8 +1,10 @@
 package br.bruno.appdev.tasksfamily.Model;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -38,6 +40,13 @@ public class TarefaDataStore {
         return instance;
     }
 
+    public void setContext(Context context) {
+        this.context = context;
+    }
+
+    public Context getContext() {
+        return context;
+    }
 
     public Tarefas getTarefa(int position) {
         Tarefas ct = tarefas.get(position);
@@ -48,8 +57,26 @@ public class TarefaDataStore {
         return tarefas;
     }
 
-    public void atualizarCampo(Tarefas tarefa){
+    public boolean atualizarTarefa(int position, boolean concluida){
+        try {
+            Tarefas trf = getTarefa(position);
 
+            autenticacao = ConfiguracaoFireBase.getFirebaseAutenticacao();
+            usuarioFirebase = autenticacao.getCurrentUser();
+            DatabaseReference raiz = FirebaseDatabase.getInstance().getReference();
+
+            String email = usuarioFirebase.getEmail().toString();
+
+            raiz.child("Tasks").child(email.split("@")[0]).child(String.valueOf(trf.getEventID())).child("tarefaFeita").setValue(concluida);
+
+            raiz.child("Tasks").child(email.split("@")[0]).child(String.valueOf(trf.getEventID())).child("tarefaConcluida").setValue(true);
+
+            trf.setTarefaConcluida(true);
+            trf.setTarefaFeita(concluida);
+            return true;
+        }catch (Exception e){
+            return false;
+        }
     }
 
     public void carregaTarefas(){
@@ -80,5 +107,4 @@ public class TarefaDataStore {
             }
         });
     }
-
 }

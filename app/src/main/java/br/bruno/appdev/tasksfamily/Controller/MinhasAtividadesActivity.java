@@ -41,6 +41,7 @@ public class MinhasAtividadesActivity extends AppCompatActivity {
 
         adapter = new AtividadesAdapter();
         recyclerView.setAdapter(adapter);
+        TarefaDataStore.sharedInstance().setContext(this);
 
         LinearLayoutManager manager = new LinearLayoutManager(this);
         manager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -52,18 +53,6 @@ public class MinhasAtividadesActivity extends AppCompatActivity {
 
     public void OnClickBtnTarefaFeita(View view){
 
-        AlertDialog.Builder message = new AlertDialog.Builder(this);
-        message.setTitle("Concluir está tarefa?");
-        message.setPositiveButton("Sim", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-
-                TarefaDataStore.sharedInstance();
-                adapter.notifyDataSetChanged();
-            }
-        });
-        message.setNegativeButton("Não", null);
-        message.show();
     }
 
     public void OnClickBtnRejeitarTarefa(View view){

@@ -18,6 +18,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import br.bruno.appdev.tasksfamily.Model.ConfiguracaoFireBase;
 import br.bruno.appdev.tasksfamily.Model.TarefaDataStore;
+import br.bruno.appdev.tasksfamily.Model.UsuarioDataStore;
 import br.bruno.appdev.tasksfamily.R;
 
 public class MainActivity extends AppCompatActivity
@@ -34,17 +35,6 @@ public class MainActivity extends AppCompatActivity
 
         firebase = ConfiguracaoFireBase.getFirebaseAutenticacao();
         verifyUserLogged();
-
-        TarefaDataStore.sharedInstance().carregaTarefas();
-
-//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-//            }
-//        });
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -100,6 +90,7 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.nav_novo_usuario) {
             Intent intent = new Intent(MainActivity.this, CadastroUsuarioActivity.class);
+            intent.putExtra("tela", "menu");
             startActivity(intent);
         } else if (id == R.id.nav_nova_tarefa) {
             Intent intent = new Intent(MainActivity.this, CadastroAtividadesActivity.class);
@@ -128,6 +119,10 @@ public class MainActivity extends AppCompatActivity
        if(user == null){
            Intent intentLogin = new Intent(MainActivity.this, LoginActivity.class);
            startActivity(intentLogin);
+       }
+       else {
+           TarefaDataStore.sharedInstance().carregaTarefas();
+           UsuarioDataStore.sharedInstance().carregaUsuarios();
        }
     }
 }
