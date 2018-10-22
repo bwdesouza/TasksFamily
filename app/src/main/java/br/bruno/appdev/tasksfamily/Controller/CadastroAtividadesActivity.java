@@ -57,12 +57,14 @@ public class CadastroAtividadesActivity extends AppCompatActivity {
     private EditText dtAtvHoraFim;
     private EditText edtAtvDescricao;
     private Spinner emails_parentescos_spinner;
+    private Spinner alerta_min_spinner;
     private String emailDestinatario;
     private int btnClicado = 0;
     private int selectedHour, selectedMinute;
     private long IDCal;
     private FirebaseAuth autenticacao;
     FirebaseUser usuarioFirebase;
+    private int alertaminAntes;
 
 
     // Projection array. Creating indices for this array instead of doing
@@ -85,6 +87,8 @@ public class CadastroAtividadesActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cadastro_atividades);
 
+        TarefaDataStore.sharedInstance().carregaTarefas();
+
         // No explanation needed, we can request the permission.
         ActivityCompat.requestPermissions(CadastroAtividadesActivity.this,
                 new String[]{Manifest.permission.READ_CALENDAR}, 1);
@@ -93,14 +97,26 @@ public class CadastroAtividadesActivity extends AppCompatActivity {
         ActivityCompat.requestPermissions(CadastroAtividadesActivity.this,
                 new String[]{Manifest.permission.WRITE_CALENDAR}, 2);
 
-        Spinner spinner = findViewById(R.id.atv_repetir_spinner);
-        // Create an ArrayAdapter using the string array and a default spinner layout
+        alerta_min_spinner = findViewById(R.id.atv_alerta_spinner);
+
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
-                R.array.atv_repetir_spinner, android.R.layout.simple_spinner_item);
-        // Specify the layout to use when the list of choices appears
+                R.array.atv_alerta_spinner, android.R.layout.simple_spinner_item);
+
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        // Apply the adapter to the spinner
-        spinner.setAdapter(adapter);
+
+        alerta_min_spinner.setAdapter(adapter);
+
+        alerta_min_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                alertaminAntes = Integer.parseInt( (String) parent.getItemAtPosition(position));
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
 
         autenticacao = ConfiguracaoFireBase.getFirebaseAutenticacao();
         usuarioFirebase = autenticacao.getCurrentUser();
@@ -273,13 +289,15 @@ public class CadastroAtividadesActivity extends AppCompatActivity {
 
     public void OnClickBtnAtvCancelar(View view){
 //        iniciaEventoGoogle();
-        long eventID = IDCal;
+        //long eventID = IDCal;
 
-        Uri uri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, eventID);
-        Intent intent = new Intent(Intent.ACTION_VIEW)
-                .setData(uri);
-        startActivity(intent);
-//        finish();
+//        Uri uri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, eventID);
+//        Intent intent = new Intent(Intent.ACTION_VIEW)
+//                .setData(uri);
+//        startActivity(intent);
+
+        Toast.makeText(CadastroAtividadesActivity.this,"Criação de nova tarefa foi cancelada!", Toast.LENGTH_LONG).show();
+        finish();
     }
 
     public void OnClickBtnAtvSalvar(View view){
@@ -387,26 +405,48 @@ public class CadastroAtividadesActivity extends AppCompatActivity {
             endTime.set(Integer.parseInt(yearFim), Integer.parseInt(monthFim), Integer.parseInt(dayFim),  Integer.parseInt(hourFim),  Integer.parseInt(minFim));
             endMillis = endTime.getTimeInMillis();
 
+            Usuarios usuarioDestinatario = UsuarioDataStore.sharedInstance().getUsuarios(emailDestinatario);
             // Insert Event
             try {
+
                 cr = getContentResolver();
                 ContentValues values = new ContentValues();
                 values.put(CalendarContract.Events.DTSTART, startMillis);
                 values.put(CalendarContract.Events.DTEND, endMillis);
                 values.put(CalendarContract.Events.TITLE, edtAtvTitulo.getText().toString());
                 values.put(CalendarContract.Events.DESCRIPTION, edtAtvDescricao.getText().toString());
-                values.put(CalendarContract.Events.CALENDAR_ID, 3);
+                values.put(CalendarContract.Events.CALENDAR_ID, calID);
                 values.put(CalendarContract.Events.EVENT_TIMEZONE, "UTC/GMT -3:00");
                 uri = cr.insert(CalendarContract.Events.CONTENT_URI, values);
 
                 String eventID = uri.getLastPathSegment();
                 IDCal = Long.parseLong(eventID);
+
+                cr = getContentResolver();
+                values = new ContentValues();
+                values.put(CalendarContract.Attendees.ATTENDEE_NAME, usuarioDestinatario.getNome().toString());
+                values.put(CalendarContract.Attendees.ATTENDEE_EMAIL, usuarioDestinatario.getEmail().toString());
+                values.put(CalendarContract.Attendees.ATTENDEE_RELATIONSHIP, CalendarContract.Attendees.RELATIONSHIP_ATTENDEE);
+                values.put(CalendarContract.Attendees.ATTENDEE_TYPE, CalendarContract.Attendees.TYPE_OPTIONAL);
+                values.put(CalendarContract.Attendees.ATTENDEE_STATUS, CalendarContract.Attendees.ATTENDEE_STATUS_INVITED);
+                values.put(CalendarContract.Attendees.EVENT_ID, eventID);
+                uri = cr.insert(CalendarContract.Attendees.CONTENT_URI, values);
+
+                cr = getContentResolver();
+                values = new ContentValues();
+                values.put(CalendarContract.Reminders.MINUTES, alertaminAntes);
+                values.put(CalendarContract.Reminders.EVENT_ID, eventID);
+                values.put(CalendarContract.Reminders.METHOD, CalendarContract.Reminders.METHOD_ALERT);
+                uri = cr.insert(CalendarContract.Reminders.CONTENT_URI, values);
+
+
+
             }catch (Exception e){
 
             }
 
             Tarefas tarefa = new Tarefas(IDCal, edtAtvTitulo.getText().toString(), edtAtvDescricao.getText().toString(),emailDestinatario,
-                    email, false, UsuarioDataStore.sharedInstance().getUsuarios(emailDestinatario).getGrauParentesco(), false, false);
+                    email, false, usuarioDestinatario.getGrauParentesco(), false, false);
 
             tarefa.SalvarTask();
 

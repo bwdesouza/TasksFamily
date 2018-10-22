@@ -1,30 +1,22 @@
 package br.bruno.appdev.tasksfamily.Entities;
 
-import com.google.firebase.database.DatabaseReference;
-
-import java.util.List;
-
-import br.bruno.appdev.tasksfamily.Model.ConfiguracaoFireBase;
-import br.bruno.appdev.tasksfamily.Model.UsuarioDataStore;
-
-public class Tarefas {
-
+public class TarefaPendente {
     private long eventID;
     private String Titulo;
     private String Descricao;
     private String EmailsDestinatarios;
     private String EmailCriador;
-    private String GrauParentesco;
     private boolean TarefaValidada;
+    private String GrauParentesco;
     private boolean TarefaFeita;
     private boolean TarefaConcluida;
     private boolean TarefaAprovada;
-
-    public Tarefas(){
+    public TarefaPendente(){
 
     }
 
-    public Tarefas(long eventID, String titulo, String descricao, String emailsDestinatarios,
+    /*
+    public TarefaPendente(long eventID, String titulo, String descricao, String emailsDestinatarios,
                    String emailCriador, boolean tarefaValidada, String grauParentesco,
                    boolean tarefaFeita, boolean tarefaConcluida) {
 
@@ -41,12 +33,10 @@ public class Tarefas {
 
     public void SalvarTask(){
         DatabaseReference referencia = ConfiguracaoFireBase.getFirebase();
-        String email = getEmailCriador();
-        Usuarios us = UsuarioDataStore.sharedInstance().getUsuarios(email);
-
-        referencia.child("Tasks").child(us.getGuidTarefa()).child(String.valueOf(getEventID())).setValue(this);
+        String email = getEmailCriador().split("@")[0];
+        referencia.child("Tasks").child(email).child(String.valueOf(getEventID())).setValue(this);
     }
-
+*/
 
     public String getEmailsDestinatarios() {
         return EmailsDestinatarios;
@@ -127,4 +117,5 @@ public class Tarefas {
     public void setTarefaAprovada(boolean tarefaAprovada) {
         TarefaAprovada = tarefaAprovada;
     }
+
 }

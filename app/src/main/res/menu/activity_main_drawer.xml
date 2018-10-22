@@ -6,31 +6,31 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_novo_usuario"
-            android:icon="@drawable/ic_menu_camera"
-            android:title="Cadastrar usuário" />
+            android:icon="@drawable/cadastro_usuario"
+            android:title="Cadastrar Família" />
         <item
             android:id="@+id/nav_nova_tarefa"
-            android:icon="@drawable/ic_menu_gallery"
-            android:title="Cadastrar tarefa" />
+            android:icon="@drawable/nova_tarefa"
+            android:title="Nova Tarefa" />
         <item
             android:id="@+id/nav_minhas_tarefas"
-            android:icon="@drawable/ic_menu_slideshow"
+            android:icon="@drawable/minhas_tarefas"
             android:title="Minhas tarefas" />
         <item
-            android:id="@+id/nav_manage"
-            android:icon="@drawable/ic_menu_manage"
-            android:title="Tools" />
+            android:id="@+id/nav_atividades_pendentes"
+            android:icon="@drawable/podium"
+            android:title="Atividades Pendentes" />
     </group>
 
-    <item android:title="Communicate">
+    <item android:title="Conta">
         <menu>
             <item
-                android:id="@+id/nav_share"
-                android:icon="@drawable/ic_menu_share"
-                android:title="Share" />
+                android:id="@+id/nav_familia"
+                android:icon="@drawable/my_family"
+                android:title="Minha Família" />
             <item
-                android:id="@+id/nav_send"
-                android:icon="@drawable/ic_menu_send"
+                android:id="@+id/nav_sair"
+                android:icon="@drawable/logout"
                 android:title="Sair" />
         </menu>
     </item>

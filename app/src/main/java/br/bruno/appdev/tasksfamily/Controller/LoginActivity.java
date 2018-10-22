@@ -32,6 +32,7 @@ import java.util.Arrays;
 
 import br.bruno.appdev.tasksfamily.Entities.Usuarios;
 import br.bruno.appdev.tasksfamily.Model.ConfiguracaoFireBase;
+import br.bruno.appdev.tasksfamily.Model.TarefaDataStore;
 import br.bruno.appdev.tasksfamily.R;
 
 public class LoginActivity extends AppCompatActivity {
@@ -156,6 +157,8 @@ public class LoginActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<AuthResult> task) {
 
                 if(task.isSuccessful()){
+                    TarefaDataStore.sharedInstance().carregaTarefas();
+
                     Toast.makeText(LoginActivity.this,"Usuário logado com sucesso!", Toast.LENGTH_LONG).show();
                     finish();
                 }else{

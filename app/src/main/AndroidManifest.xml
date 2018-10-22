@@ -47,7 +47,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".Controller.CadastroAtividadesActivity" />
-        <activity android:name=".Controller.MinhasAtividadesActivity"></activity>
+        <activity android:name=".Controller.MinhasAtividadesActivity" />
+        <activity android:name=".Controller.PendentesAtividadesActivity"></activity>
     </application>
 
 </manifest>

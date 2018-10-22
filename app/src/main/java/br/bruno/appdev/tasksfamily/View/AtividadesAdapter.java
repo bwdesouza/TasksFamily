@@ -36,7 +36,7 @@ import br.bruno.appdev.tasksfamily.R;
 
 public class AtividadesAdapter extends RecyclerView.Adapter<AtividadesAdapter.AtividadeHolder> {
 
-    private List<Tarefas> tarefas = TarefaDataStore.sharedInstance().getAll();
+    private List<Tarefas> tarefas = TarefaDataStore.sharedInstance().getAllMinhasTarefas();
 
     @NonNull
     @Override
@@ -54,25 +54,23 @@ public class AtividadesAdapter extends RecyclerView.Adapter<AtividadesAdapter.At
         holder.txtLstAtvTitulo.setText(task.getTitulo());
         holder.edtLstAtvDescricao.setText(task.getDescricao());
 
-        Tarefas tarf = TarefaDataStore.sharedInstance().getTarefa(position);
-
-        if(tarf.isTarefaConcluida()){
+        if(task.isTarefaConcluida()){
             holder.imgLstTarefaNaoFeita.setVisibility(View.INVISIBLE);
             holder.imgLstTarefaFeita.setEnabled(false);
-            if(tarf.isTarefaFeita()) {
+            if(task.isTarefaFeita()) {
                 holder.imgLstTarefaFeita.setImageResource(R.drawable.check_symbol);
             }else{
                 holder.imgLstTarefaFeita.setImageResource(R.drawable.close_button);
             }
         }
 
-        if(tarf.getGrauParentesco().equals("Filha")) {
+        if(task.getGrauParentesco().equals("Filha")) {
             holder.imgLstUserTarefa.setImageResource(R.drawable.girl);
-        }else if(tarf.getGrauParentesco().equals("Filho")) {
+        }else if(task.getGrauParentesco().equals("Filho")) {
             holder.imgLstUserTarefa.setImageResource(R.drawable.boy);
-        }else if(tarf.getGrauParentesco().equals("Pai")) {
+        }else if(task.getGrauParentesco().equals("Pai")) {
             holder.imgLstUserTarefa.setImageResource(R.drawable.man);
-        }else if(tarf.getGrauParentesco().equals("Mae")) {
+        }else if(task.getGrauParentesco().equals("Mae")) {
             holder.imgLstUserTarefa.setImageResource(R.drawable.girl2);
         }
 

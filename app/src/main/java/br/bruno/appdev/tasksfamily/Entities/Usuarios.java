@@ -23,6 +23,15 @@ public class Usuarios {
     private String idFilho;
     private String idFilha;
     private String grauParentesco;
+    private String guidTarefa;
+
+    public String getGuidTarefa() {
+        return guidTarefa;
+    }
+
+    public void setGuidTarefa(String guidTarefa) {
+        this.guidTarefa = guidTarefa;
+    }
 
     public Usuarios() {
     }

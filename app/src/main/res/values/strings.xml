@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">TasksFamily</string>
+    <string name="app_name">Minha Família</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_title">Android Studio</string>
@@ -10,13 +10,11 @@
     <string name="facebook_app_id">2202675019946194</string>
     <string name="fb_login_protocol_scheme">fb2202675019946194</string>
 
-    <string-array name="atv_repetir_spinner">
-        <item>Nunca</item>
-        <item>Todos os Dias</item>
-        <item>A Cada Semana</item>
-        <item>A Cada 15 Dias</item>
-        <item>A Cada Mês</item>
-        <item>A Cada Ano</item>
+    <string-array name="atv_alerta_spinner">
+        <item>15</item>
+        <item>30</item>
+        <item>45</item>
+        <item>60</item>
     </string-array>
 
     <string-array name="cad_parentesco_spinner">

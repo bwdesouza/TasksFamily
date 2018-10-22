@@ -21,6 +21,7 @@ import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.google.firebase.auth.FirebaseUser;
 
+import java.util.UUID;
 import java.util.List;
 
 import br.bruno.appdev.tasksfamily.Entities.Usuarios;
@@ -44,6 +45,7 @@ public class CadastroUsuarioActivity extends AppCompatActivity {
     private Spinner parentesco;
     private String qualTelaChamaou;
     private TextView txtCadVoceE;
+    private String emailUsuarioLogado;
 
 
     private FirebaseAuth autenticacao;
@@ -63,10 +65,13 @@ public class CadastroUsuarioActivity extends AppCompatActivity {
         rbMasculino = findViewById(R.id.rbCadMasculino);
         rbFeminino = findViewById(R.id.rbCadFeminino);
         parentesco = findViewById(R.id.cad_parentesco_spinner);
-        qualTelaChamaou = getIntent().getDataString();
         txtCadVoceE = findViewById(R.id.txtCadVoceE);
 
-        if(qualTelaChamaou != "login") {
+        UsuarioDataStore.sharedInstance().carregaUsuarios();
+
+        qualTelaChamaou = getIntent().getStringExtra("tela");
+
+        if(!qualTelaChamaou.equals("login")) {
             txtCadVoceE.setText("Ele é seu.. ?");
         }
 
@@ -86,19 +91,6 @@ public class CadastroUsuarioActivity extends AppCompatActivity {
 
     public void OnClickBtnCadSalvar(View view){
         if(edtCadSenha.getText().toString().equals(edtCadConfSenha.getText().toString())){
-            autenticacao = ConfiguracaoFireBase.getFirebaseAutenticacao();
-            usuarioFirebase = autenticacao.getCurrentUser();
-
-            String email = usuarioFirebase.getEmail().toString();
-            Usuarios us = UsuarioDataStore.sharedInstance().getUsuarios(email);
-            String grauParentesco = parentesco.getSelectedItem().toString();
-
-            if(us != null){
-                if(grauParentesco.equals(us.getGrauParentesco())){
-                    Toast.makeText(this,"Você não pode ser " + parentesco.getSelectedItem().toString() + " pois o seu " + us.getNome() + " já é!", Toast.LENGTH_LONG).show();
-                    return;
-                }
-            }
 
             usuario = new Usuarios();
             usuario.setNome(edtCadNome.getText().toString());
@@ -114,18 +106,27 @@ public class CadastroUsuarioActivity extends AppCompatActivity {
                 usuario.setSexo("Masculino");
             }
 
-            if(qualTelaChamaou != "login"){
-                if(grauParentesco.equals("Filho")){
-                    us.setIdFilho(usuario.getId());
-                }else if(grauParentesco.equals("Filha")){
-                    us.setIdFilha(usuario.getId());
-                }else if(grauParentesco.equals("Mae")){
-                    us.setIdMae(usuario.getId());
-                }else if(grauParentesco.equals("Pai")){
-                    us.setIdPai(usuario.getId());
+            if(!qualTelaChamaou.equals("login")) {
+                autenticacao = ConfiguracaoFireBase.getFirebaseAutenticacao();
+                usuarioFirebase = autenticacao.getCurrentUser();
+
+                emailUsuarioLogado = usuarioFirebase.getEmail().toString();
+                Usuarios us = UsuarioDataStore.sharedInstance().getUsuarios(emailUsuarioLogado);
+                String grauParentesco = parentesco.getSelectedItem().toString();
+
+                if(us != null){
+                    if(grauParentesco.equals(us.getGrauParentesco())){
+                        Toast.makeText(this,"Você não pode ser " + parentesco.getSelectedItem().toString() + " pois o seu " + us.getNome() + " já é!", Toast.LENGTH_LONG).show();
+                        return;
+                    }
                 }
 
-                UsuarioDataStore.sharedInstance().atualizarUsuario(us);
+                usuario.setGuidTarefa(us.getGuidTarefa());
+            }else{
+                UUID uuid = UUID.randomUUID();
+                String randomUUIDString = uuid.toString();
+
+                usuario.setGuidTarefa(randomUUIDString);
             }
 
             CadastrarUsuario();
@@ -150,10 +151,43 @@ public class CadastroUsuarioActivity extends AppCompatActivity {
                     String identificadorUsuario = Base64Custom.codificarBase64(usuario.getEmail());
                     FirebaseUser usuarioFirebase = task.getResult().getUser();
                     usuario.setId(identificadorUsuario);
+
+                    Usuarios us = UsuarioDataStore.sharedInstance().getUsuarios(emailUsuarioLogado);
+                    String grauParentesco = parentesco.getSelectedItem().toString();
+
+                    if(!qualTelaChamaou.equals("login")) {
+                        if (grauParentesco.equals("Filho")) {
+                            us.setIdFilho(usuario.getId());
+                        } else if (grauParentesco.equals("Filha")) {
+                            us.setIdFilha(usuario.getId());
+                        } else if (grauParentesco.equals("Mae")) {
+                            us.setIdMae(usuario.getId());
+                        } else if (grauParentesco.equals("Pai")) {
+                            us.setIdPai(usuario.getId());
+                        }
+
+                        String grauParentescoUsLog = us.getGrauParentesco();
+                        if (grauParentescoUsLog.equals("Filho")) {
+                            usuario.setIdFilho(us.getId());
+                        } else if (grauParentescoUsLog.equals("Filha")) {
+                            usuario.setIdFilha(us.getId());
+                        } else if (grauParentescoUsLog.equals("Mae")) {
+                            usuario.setIdMae(us.getId());
+                        } else if (grauParentescoUsLog.equals("Pai")) {
+                            usuario.setIdPai(us.getId());
+                        }
+                    }
+
                     usuario.Salvar();
 
                     Preferencias preferencia = new Preferencias(CadastroUsuarioActivity.this);
                     preferencia.SalvarUsuarioPreferenciar(identificadorUsuario, usuario.getNome());
+
+                    if(us != null) {
+                        UsuarioDataStore.sharedInstance().atualizarUsuario(us);
+                        autenticacao.signInWithEmailAndPassword(us.getEmail(), us.getSenha());
+                        UsuarioDataStore.sharedInstance().carregaUsuarios();
+                    }
 
                     finish();
                 }else {
